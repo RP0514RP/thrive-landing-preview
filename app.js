@@ -2,7 +2,6 @@ document.documentElement.classList.add('js');
 const root = document.documentElement;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
-const gatherMedia = matchMedia('(min-width: 801px) and (min-height: 850px)');
 const clamp = (value,min=0,max=1) => Math.min(max,Math.max(min,value));
 let manualReduced = false;
 const motionReduced = () => reducedMotion.matches || manualReduced;
@@ -144,49 +143,6 @@ deck.addEventListener('pointerup',endDrag);
 deck.addEventListener('pointercancel',endDrag);
 renderDeck();
 
-const days = {
-  slow:{prefix:'For your',word:'slower days.',feature:'daily',response:'Take a breath. Start with a check-in.'},
-  balanced:{prefix:'For every',word:'kind of day.',feature:'cycle',response:'Your cycle, in the context of your life.'},
-  energy:{prefix:'For your',word:'stronger days.',feature:'movement',response:'Pilates, yoga, strength & mobility. Your call.'}
-};
-let currentDay='balanced';
-function setDay(key,transition=true) {
-  if(!days[key]) return;
-  const previous=currentDay;currentDay=key;
-  const day=days[key],f=features[day.feature];
-  document.querySelector('.hero').dataset.day=key;
-  document.getElementById('hero-prefix').textContent=day.prefix;
-  document.getElementById('day-word').textContent=day.word;
-  document.getElementById('day-response').textContent=day.response;
-  document.querySelectorAll('.day-options button').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.day===key)));
-  const nextPhoto=document.querySelector('[data-photo="'+key+'"]');
-  const prevPhoto=document.querySelector('[data-photo="'+previous+'"]');
-  document.querySelectorAll('.day-photo').forEach(photo=>{
-    photo.getAnimations().forEach(animation=>animation.cancel());
-    photo.classList.remove('is-current','is-leaving');
-    photo.setAttribute('aria-hidden',String(photo!==nextPhoto));
-  });
-  if(previous!==key && transition && !motionReduced()){
-    prevPhoto.classList.add('is-leaving');
-    nextPhoto.classList.add('is-current');
-    const a=animate(nextPhoto,[{clipPath:'circle(4% at 70% 48%)'},{clipPath:'circle(145% at 70% 48%)'}],{duration:850,easing:'cubic-bezier(.2,.75,.2,1)'});
-    if(a) a.addEventListener('finish',()=>{if(!prevPhoto.classList.contains('is-current'))prevPhoto.classList.remove('is-leaving');},{once:true});
-  } else nextPhoto.classList.add('is-current');
-  const heroDevice=document.querySelector('.hero-device');
-  heroDevice.className='hero-device '+f.frame;
-  const heroImage=document.getElementById('hero-screen');
-  heroImage.src=f.light;heroImage.alt=f.alt;
-  heroImage.removeAttribute('width');heroImage.removeAttribute('height');
-  document.getElementById('hero-app-caption').innerHTML=f.hero+' <svg aria-hidden="true"><use href="#expand"/></svg>';
-  if(transition && previous!==key){
-    animate(heroDevice,[{translate:'0 17px',rotate:'4deg'},{translate:'0 0',rotate:'0deg'}],{duration:600,easing:'cubic-bezier(.2,.75,.2,1)'});
-    animate(document.getElementById('day-word'),[{translate:'0 7px'},{translate:'0 0'}],{duration:400,easing:'ease-out'});
-  }
-  selectFeature(day.feature);
-}
-document.querySelectorAll('.day-options button').forEach(button => button.addEventListener('click',()=>setDay(button.dataset.day)));
-setDay('balanced',false);
-
 const screenshotDialog=document.getElementById('screenshot-dialog');
 function openScreenshot(key=currentFeature,forcedTheme) {
   const f=features[key];
@@ -197,10 +153,11 @@ function openScreenshot(key=currentFeature,forcedTheme) {
   screenshotDialog.showModal();screenshotDialog.scrollTop=0;
 }
 document.querySelector('.expand-screen').addEventListener('click',()=>openScreenshot());
-document.querySelector('.hero-app').addEventListener('click',()=>openScreenshot(days[currentDay].feature,'light'));
+document.querySelector('.hero-app').addEventListener('click',()=>openScreenshot('cycle','light'));
+document.querySelector('.ritual-app').addEventListener('click',()=>openScreenshot('daily','dark'));
 const information={
   release:{title:'A little note about the launch',html:'<p class="dialog-status">Coming soon to iOS &amp; Android</p><p>Thrive is preparing for launch. We’re planning 14 days free, so you can explore the app at your own pace.</p><p>The price after the trial, renewal and cancellation details are still to be announced. You’ll be able to review the full terms before subscribing.</p><p>This preview cannot create an account, start a subscription or take payment.</p>'},
-  privacy:{title:'Privacy',html:'<p class="dialog-status">App privacy policy · Coming before launch</p><p>The full app privacy policy is being prepared and will be linked here before Thrive launches.</p><p>The day choices and gallery selections on this preview stay in your browser tab. They aren’t sent to Thrive. This preview doesn’t create an account or collect payment details.</p>'},
+  privacy:{title:'Privacy',html:'<p class="dialog-status">App privacy policy · Coming before launch</p><p>The full app privacy policy is being prepared and will be linked here before Thrive launches.</p><p>The gallery selections on this preview stay in your browser tab. They aren’t sent to Thrive. This preview doesn’t create an account or collect payment details.</p>'},
   terms:{title:'Terms & subscription',html:'<p class="dialog-status">App terms · Coming before launch</p><p>The app terms, price after the planned 14-day trial, renewal and cancellation details are still to be announced.</p><p>Full subscription details will be available before you start. This preview cannot create a subscription or take payment.</p>'},
   support:{title:'Contact & support',html:'<p class="dialog-status">Official support contact · Coming soon</p><p>We’ll publish Thrive’s support contact before the app launches.</p><p>For feedback on this preview, contact the person who shared the page with you.</p><p><a href="#questions">Read the common questions</a></p>'}
 };
@@ -231,8 +188,6 @@ matchMedia('(min-width: 901px)').addEventListener('change',event=>{if(event.matc
 document.querySelectorAll('.faq-list details').forEach(detail=>detail.addEventListener('toggle',()=>{if(detail.open)document.querySelectorAll('.faq-list details').forEach(other=>{if(other!==detail)other.open=false;});}));
 
 const hero=document.querySelector('.hero');
-const gather=document.querySelector('.gather');
-const gatherPin=document.querySelector('.gather-pin');
 let rafPending=false;
 function updateScroll(){
   rafPending=false;
@@ -241,17 +196,11 @@ function updateScroll(){
   if(motionReduced())return;
   const heroRect=hero.getBoundingClientRect();
   hero.style.setProperty('--hero-p',clamp(-heroRect.top/heroRect.height));
-  if(gatherMedia.matches){
-    const rect=gather.getBoundingClientRect();
-    const header=document.querySelector('.site-header').offsetHeight;
-    const travel=gather.offsetHeight-gatherPin.offsetHeight;
-    gather.style.setProperty('--gather',clamp((header-rect.top)/Math.max(1,travel)));
-  }else gather.style.setProperty('--gather',1);
+
 }
 function requestScrollUpdate(){if(!rafPending){rafPending=true;requestAnimationFrame(updateScroll);}}
 addEventListener('scroll',requestScrollUpdate,{passive:true});
 addEventListener('resize',requestScrollUpdate,{passive:true});
-gatherMedia.addEventListener('change',requestScrollUpdate);
 if(finePointer.matches){
   hero.addEventListener('pointermove',event=>{if(motionReduced())return;const rect=hero.getBoundingClientRect();hero.style.setProperty('--px',((event.clientX-rect.left)/rect.width-.5)*2);},{passive:true});
   hero.addEventListener('pointerleave',()=>hero.style.setProperty('--px',0));
@@ -264,12 +213,12 @@ function syncMotion(){
   if(off){
     animations.forEach(a=>a.cancel());animations.clear();
     document.getAnimations().forEach(a=>a.cancel());
-    document.querySelectorAll('.day-photo.is-leaving').forEach(photo=>photo.classList.remove('is-leaving'));
   }
   requestScrollUpdate();
 }
 motionToggle.addEventListener('click',()=>{manualReduced=!manualReduced;syncMotion();});
 reducedMotion.addEventListener('change',syncMotion);
 syncMotion();
+animate(document.querySelector('.hero-app'),[{translate:'0 12px'},{translate:'0 0'}],{duration:1000,easing:'cubic-bezier(.2,.75,.2,1)'});
 const preload=()=>Object.values(features).forEach(f=>[f.light,f.dark].filter(Boolean).forEach(src=>{const image=new Image();image.src=src;}));
 if('requestIdleCallback'in window)requestIdleCallback(preload);else setTimeout(preload,1200);
