@@ -12,6 +12,10 @@ const checks={
   'Authentic captioned videos supplied':['app','founder'].every(key=>c.videos[key].src&&c.videos[key].poster&&c.videos[key].captions),
   'Founder identity and credentials verified':!!(c.founder.name&&c.founder.photo&&c.founder.credentialsVerified),
   'All testimonials genuine and verified':c.testimonials.length>=3&&c.testimonials.every(item=>item.verified&&!/sample member/i.test(item.name)),
+  'Price/card transparency confirmed':!c.copy.priceText.includes('[price]')&&typeof c.copy.cardRequired==='boolean',
+  'Privacy statements verified':c.privacyClaims.every(claim=>claim.verified&&!claim.text.includes('[')),
+  'Reporting availability verified':c.report.verified===true,
+  'Marketing experience statement verified':c.copy.credibilityVerified===true,
   'Launch explicitly verified':c.launchVerified===true,
   'Production mode explicitly selected':c.previewMode===false
 };

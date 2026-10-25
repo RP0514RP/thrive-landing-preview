@@ -1,5 +1,7 @@
 # THRIVE — replacement and launch checklist
 
+Updated for conversion-2. See PLACEHOLDERS.md for the new PRICE_TEXT, CARD_REQUIRED, FOUNDER_CREDIBILITY_TEXT/VERIFIED, PRIVACY_CLAIMS, REPORT_FEATURE_VERIFIED and REPORT_SAMPLE constants. CHANGES-CONVERSION-2.md records the 12 requested tasks.
+
 The complete page is implemented for visual review. The public preview must retain its Design preview banner, sample labels and noindex until launch has been verified. It does not start subscriptions or collect payments.
 
 All paths below are relative to `outputs/thrive-landing/`.
@@ -12,10 +14,10 @@ All paths below are relative to `outputs/thrive-landing/`.
 | Product availability | `dist/index.html` feature, steps and FAQ sections; `dist/config.js` → `trial.entitlementsVerified` | Verify symptoms/history, cycle, mood/energy/stress/lifestyle, full meals/nutrition, trends/insights, personalized guidance and reports, Strength Club, home/gym, yoga/Pilates, mindfulness/meditation/relaxation, sleep/stress and educational resources are all genuinely available in the trial. |
 | App demonstration film | `dist/config.js` → `videos.app.src`, `.poster`, `.captions` | Authentic screen recording, approved thumbnail and English WebVTT captions. The card and modal use the configured poster. Controls remain click-to-play, with no audio autoplay. |
 | Founder film | `dist/config.js` → `videos.founder` | Authentic captioned introduction, poster and video source. Add an approved full transcript in `dist/app.js` → `openVideo`. The current outline is explicitly a placeholder, not a quote. |
-| Founder identity | `dist/config.js` → `founder` | Name, genuine portrait path, approved professional experience statement; set `credentialsVerified` only with evidence. The supplied 10+ years statement is currently labeled pending, never medical expertise. |
-| Four sample testimonials | `dist/config.js` → `testimonials` | Replace names, initials, context and quotes with authentic permission-based feedback; document permission and set each `verified` flag. Monogram avatar placeholders are intentional. Approved photos can replace `.avatar-placeholder` in `dist/app.js` → testimonial renderer; add meaningful alt text. Never simply remove the sample labels from invented copy. No ratings or user counts were invented. |
+| Founder identity | `dist/config.js` → `founder` | Name, genuine portrait path, approved professional experience statement; set `credentialsVerified` only with evidence. The requested 12+ years statement is currently labeled pending, never medical expertise. |
+| Sample testimonials (one featured) | `dist/config.js` → `testimonials` | Replace names, initials, context and quotes with authentic permission-based feedback; document permission and set each `verified` flag. Monogram avatar placeholders are intentional. Approved photos can replace `.avatar-placeholder` in `dist/app.js` → testimonial renderer; add meaningful alt text. Never simply remove the sample labels from invented copy. No ratings or user counts were invented. |
 | Symptom screen and history | `dist/index.html` → `#symptom-preview` | Replace clearly labeled illustrative sample rows/history with a verified app screenshot or accurate approved UI. Retain illustrative/sample labeling if it is still simulated. |
-| Patterns chart | `dist/index.html` → `#patterns-preview`, `.trend-chart`; `dist/app.js` → `sample-report` handler | Replace the sample seven-day chart and sample text report with accurate approved product demonstration content. Never imply its sample data are real user results. A report download is not an app trial activation. |
+| Patterns chart | `dist/index.html` → `#patterns-preview`, `.trend-chart`; `dist/app.js` → `reportMarkup` / `downloadSampleReport` | Replace the sample seven-day chart and sample text report with accurate approved product demonstration content. Never imply its sample data are real user results. A report download is not an app trial activation. |
 | Existing app screens | `dist/assets/cycle-light.webp`, `today-light.webp`, `today-dark.webp`, `nutrition-light.webp`, `nutrition-dark.webp`, `strength-club.webp` | Team-supplied design screenshots are reused intact with CSS crops. Verify current launch UI, nutrition calculations and terminology. Remove QA text visible in the supplied Strength Club screen in the actual source screenshot. Keep real app content; do not retouch fictional features into screenshots. |
 | Hero lifestyle portrait | `dist/assets/hero-woman.webp`; `dist/index.html` → `.hero-woman` | Generated illustrative model, not the founder or a customer. Review for final brand use or replace with approved photography under the same filename. The visible illustrative-image label and alt text identify it. Prompt: `hero-lifestyle-prompt.txt` (built-in ImageGen). |
 | Movement lifestyle photograph | `dist/assets/thrive-days.webp`; `dist/styles.css` → `.movement-visual` | Existing illustrative triptych, third frame. Replace with an approved studio/movement image if desired; preserve the responsive crop and image label. |
@@ -42,6 +44,7 @@ All paths below are relative to `outputs/thrive-landing/`.
 ```sh
 node scripts/check-behavior.mjs
 python3 scripts/check-static.py
+python3 scripts/check-copy.py
 node scripts/check-launch.mjs
 ```
 

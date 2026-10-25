@@ -1,20 +1,28 @@
-# THRIVE conversion preview — validation
+# THRIVE conversion-2 — validation
 
-25 October 2026. Tested the complete static implementation in the in-app browser. These are viewport checks, not physical iPhone/Android device tests.
+25 October 2026. Tested the static site in the in-app browser. This is viewport QA, not a physical-device or full assistive-technology audit.
 
-- 320×740, 390×844, 600×900, 768×1024, 1024×768 and 1440×1000: document width equals viewport width, headline fits its container, and hero trial CTA is fully inside the initial viewport. CTA bottom positions: 433, 443, 489, 556, 588 and 658 pixels respectively.
-- Inspected mobile hero, complete desktop composition and video layouts. Original supplied screenshots are correctly cropped. No broken loaded images or browser console errors/warnings were observed.
-- Exercised hero trial CTA, desktop store-choice modal and missing Google Play link fallback; no navigation to invalid destinations, no trial/payment creation.
-- Exercised cycle/symptom/pattern tabs and keyboard tab navigation; daily check-in with dark appearance; screenshot enlargement and Escape dismissal; app walkthrough chapters; founder placeholder outline; resource placeholder modal; mobile navigation; trial-inclusions FAQ; reduced motion and back-to-top.
-- Native dialogs manage focus and Escape. Explicit focus outlines, skip navigation, tab roles, selection states and keyboard tab controls are implemented. This is not a formal assistive-technology audit.
-- `node scripts/check-behavior.mjs` passes device/marketplace routing, store host/credential/protocol validation, consent behavior, property allowlisting and rejection of website-created install/trial/paid events.
-- `python3 scripts/check-static.py` passes unique IDs, HTML/ARIA references, local assets, image alt attributes and explicit button types.
-- `node --check` passes app.js, config.js, routing.js and analytics.js.
-- `node scripts/check-launch.mjs` intentionally reports pending production prerequisites. The labeled visual-review preview is complete; store listings, trial terms, authentic proof/media, policies and actual entitlements are not connected or verified.
+| Viewport | Page width | Headline contained | Hero CTA bottom | All trial labels/disclosures |
+|---|---:|---|---:|---|
+| 390×844 (first) | 390 | Yes | 445px | Pass |
+| 320×740 | 320 | Yes | 432px | Pass |
+| 768×1024 | 768 | Yes | 516px | Pass |
+| 1440×1000 | 1440 | Yes | 575px | Pass |
 
-Review captures:
-- `../thrive-conversion-mobile.png`
-- `../thrive-conversion-mobile-full.png`
-- `../thrive-conversion-desktop-full.png`
+- At 390px, normal collapsed page height is 9,729px versus 11,489px previously: 15.3% shorter. Text zoom/reflow and expanded previews can increase page height normally.
+- Rendered body-paragraph/list audit at 390px found no body copy under 17px, excluding intentional metadata such as sample labels, dates, eyebrows and captions. Body line heights are 1.55 or higher.
+- All six primary trial controls have the exact Start My Free Trial label and an aria-describedby reference to their own visible price/card disclosure.
+- Report preview clearly labels example data. The full report modal shows all three fictional rows, with non-clinical disclaimers and a sample text export.
+- Exercised sticky trial chooser, Privacy footer modal, both new FAQs, FAQ-to-report action, mobile menu/navigation, dark Daily check-in and all three resources within the expandable library. Existing screenshot dialogs, keyboard tabs and reduced motion are retained.
+- Mobile sticky bar is 159px high (rounded) with 183px scroll/focus clearance. A focused tab remained above it. It hides on the final offer, footer and dialogs; the footer was visibly unobscured.
+- No broken loaded images or browser console errors/warnings were observed.
+- JS syntax checks pass. check-static.py passes IDs/ARIA/local assets/alt/button types. check-behavior.mjs passes marketplace routing, unknown/true/false card states, unverified placeholder defaults, consent/property filtering and conversion semantics. check-copy.py passes exact section order, CTA labels, copy limits, preserved disclaimers and shared body/secondary/tab/button color pairs (minimum 6.51:1).
+- check-launch.mjs intentionally reports pending launch facts, policy confirmations and connections. This remains a labeled review preview, not an active subscription launch.
 
-The hero portrait is a labeled generated illustrative model (built-in ImageGen), not a founder/customer. Its prompt is preserved in `hero-lifestyle-prompt.txt`. Movement photography was encoded as WebP, reducing the served asset from 2.4 MB PNG to 181 KB. The hero portrait is 111 KB. Fonts and media are self-hosted; no tracking service or external JavaScript library is loaded.
+Review captures in the parent outputs directory:
+- thrive-conversion-2-mobile.png
+- thrive-conversion-2-mobile-full.png
+- thrive-conversion-2-desktop.png
+- thrive-conversion-2-desktop-full.png
+
+No new images were generated for this revision. Existing photography, supplied app screens, fonts and natural textures were preserved.

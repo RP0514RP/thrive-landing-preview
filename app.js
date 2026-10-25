@@ -8,6 +8,42 @@ const screenshotDialog = $('#screenshot-dialog');
 const content = $('#dialog-content');
 const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const icon = name => `<svg aria-hidden="true"><use href="#${name}"/></svg>`;
+
+function offerMarkup() {
+  return `<p class="price-transparency">${escapeHTML(config.copy.priceText)}</p><p class="card-transparency">${escapeHTML(window.ThriveRouting.cardRequirement(config.copy.cardRequired))}</p>`;
+}
+$$('[data-trial]').forEach(button => {
+  const note=document.createElement('div');
+  note.className='offer-details';note.id='offer-'+button.dataset.trial;note.innerHTML=offerMarkup();
+  const reassurance=button.nextElementSibling;
+  if(reassurance?.classList.contains('reassurance'))reassurance.after(note);else button.after(note);
+  button.setAttribute('aria-describedby',note.id);
+});
+$$('[data-credibility]').forEach(element => {
+  element.innerHTML=`<p class="credibility-text">${escapeHTML(config.copy.credibilityText)}</p>${config.copy.credibilityVerified?'':'<p class="credibility-status">Experience statement awaiting verification.</p>'}`;
+});
+function reportMarkup(compact=false) {
+  const sample=config.report.sample;
+  return `<article class="report-sheet${compact?' report-compact':''}" aria-label="Illustrative THRIVE appointment report with example data"><div class="report-sheet-header"><span class="report-wordmark">Thrive</span><span class="sample-label">Example data only</span></div><h3>Appointment notes</h3><p class="report-period">${escapeHTML(sample.period)}</p><table><caption class="visually-hidden">Fictional symptom, sleep and cycle records for layout preview only</caption><thead><tr><th scope="col">Date</th><th scope="col">Noticed</th><th scope="col">Sleep</th></tr></thead><tbody>${sample.rows.map(row=>`<tr><td>${escapeHTML(row.date)}<span>${escapeHTML(row.cycle)}</span></td><td>${escapeHTML(row.symptom)}</td><td>${escapeHTML(row.sleep)}</td></tr>`).join('')}</tbody></table>${compact?`<span class="report-preview-count">Full preview: ${sample.rows.length} example entries.</span>`:''}<p class="report-footnote">${compact?'Example data. Not a clinical assessment.':'Illustrative report. Not a real health record or a clinical assessment.'}</p></article>`;
+}
+$('#report-visual').innerHTML=reportMarkup(true);
+if(config.report.verified)$('#report-status').textContent='Example report · Fictional data shown.';
+$('#privacy-claims').innerHTML=config.privacyClaims.map(claim=>`<article><h3>${escapeHTML(claim.title)}</h3><p>${escapeHTML(claim.text)}</p></article>`).join('');
+if(config.privacyClaims.every(claim=>claim.verified))$('#privacy-status').textContent='Read the full Privacy page for the details of these commitments.';
+$('#faq-data-sharing').textContent=config.privacyClaims[1].verified ? config.privacyClaims[1].text : 'The sharing and sale policy is not yet confirmed. '+config.privacyClaims[1].text+' Check the published Privacy page before entering health information.';
+if(config.report.verified)$('#faq-doctor-report').textContent='You can export a record of your symptom, sleep and cycle notes to review and share with your doctor. The sample report uses fictional example data. It is not a clinical assessment.';
+function openReport() {
+  track('feature_preview',{feature:'appointment-report'});
+  showDialog('See a sample report.',`<p class="dialog-status">Illustrative report · Example data only</p>${reportMarkup()}<button class="text-link" type="button" data-download-report>Download example text report ${icon('arrow')}</button><p class="dialog-disclosure">${config.report.verified?'The records shown are fictional.':'Final export availability, format and trial entitlement require verification.'} This preview is not a clinical assessment or medical advice.</p>`);
+}
+function downloadSampleReport() {
+  const sample=config.report.sample;
+  const report='THRIVE — ILLUSTRATIVE SAMPLE REPORT\nEXAMPLE DATA ONLY: NOT A REAL PERSON OR HEALTH RECORD\n\n'+sample.period+'\n\n'+sample.rows.map(row=>[row.date,row.cycle,row.symptom,row.sleep].join(' | ')).join('\n')+'\n\nNot medical advice, a clinical assessment or a product outcome.\nFinal reporting functionality and trial entitlement require verification.\n';
+  const url=URL.createObjectURL(new Blob([report],{type:'text/plain;charset=utf-8'}));
+  const link=document.createElement('a');link.href=url;link.download='THRIVE-example-appointment-report.txt';document.body.append(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);track('sample_report_download',{feature:'appointment-report'});
+}
+
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let manualReduced = false;
 const activeAnimations = new Set();
@@ -109,6 +145,8 @@ document.addEventListener('click', event => {
   else if (info) openInfo(info.dataset.info);
   else if (screen) openScreenshot(screen.dataset.screenshot,screen.dataset.theme || 'light');
   else if (event.target.closest('[data-back-stores]')) storeChoiceDialog();
+  else if (event.target.closest('[data-report]')) openReport();
+  else if (event.target.closest('[data-download-report]')) downloadSampleReport();
 });
 
 // ARIA tabs have one tab stop; arrows and Home/End select without scrolling the page.
@@ -133,16 +171,9 @@ connectTabs('[data-tracking]',tab => {
   $('.tracking-phone').hidden = key !== 'cycle';
   $('#symptom-preview').hidden = key !== 'symptoms';
   $('#patterns-preview').hidden = key !== 'patterns';
-  $('#tracking-caption').textContent = key === 'cycle' ? 'Your cycle, in the context of you. Tap the screen to look closer.' : 'Illustrative product screen. Sample content, not real health data.';
+  $('#tracking-caption').textContent = key === 'cycle' ? 'Tap the screen to enlarge.' : 'Illustrative product screen. Sample content, not real health data.';
   track('feature_preview',{feature:key});
   animate($('#tracking-panel'),[{transform:'translateY(6px)'},{transform:'translateY(0)'}],{duration:250,easing:'ease-out'});
-});
-$('#sample-report').addEventListener('click', () => {
-  const report = 'THRIVE — ILLUSTRATIVE SAMPLE REPORT\nDEMO CONTENT: NOT A REAL PERSON OR HEALTH RECORD\n\nPurpose: visual preview of the reporting feature.\nSeven example check-ins.\nMon: Energy low\nTue: Energy steady\nWed: Energy low\nThu: Energy high\nFri: Energy steady\nSat: Energy high\nSun: Energy high\n\nThis sample is not medical advice, a clinical assessment or a product outcome.\nFinal reporting functionality and trial entitlement require verification.\n';
-  const url = URL.createObjectURL(new Blob([report],{type:'text/plain;charset=utf-8'}));
-  const link = document.createElement('a'); link.href = url; link.download = 'THRIVE-illustrative-sample-report.txt'; document.body.append(link); link.click(); link.remove();
-  setTimeout(() => URL.revokeObjectURL(url),1000);
-  track('sample_report_download',{feature:'patterns'});
 });
 let dailyFeature = 'nutrition';
 let dailyTheme = 'light';
@@ -161,7 +192,7 @@ connectTabs('[data-daily]',tab => {dailyFeature = tab.dataset.daily; $('#daily-f
 $$('[data-app-theme]').forEach(button => button.addEventListener('click',() => {dailyTheme = button.dataset.appTheme; renderDaily();}));
 const movementCopy = {
   strength:['Your kind of strong.','Guided strength programs and workouts for home or the gym, with different levels and durations.'],
-  yoga:['Find a little flow.','Yoga, Pilates and mobility sessions to make space for movement, at your own pace.'],
+  yoga:['Find your flow.','Yoga, Pilates and mobility sessions to make space for movement, at your own pace.'],
   mindful:['Move. Breathe. Unwind.','Mindful movement and gentle practices, alongside relaxation and meditation in your wellbeing library.']
 };
 connectTabs('[data-movement]',tab => {
@@ -174,7 +205,7 @@ connectTabs('[data-movement]',tab => {
 
 // Clearly marked sample resources and testimonials, never simulated endorsements.
 $('#resources').innerHTML = config.resources.map((resource,index) => `<article class="resource-card"><span class="sample-label">${escapeHTML(resource.category)} · Sample resource</span><h3>${escapeHTML(resource.title)}</h3><p>${escapeHTML(resource.duration)}</p><button type="button" data-resource="${index}" aria-label="Preview ${escapeHTML(resource.title)}">${icon('arrow')}</button></article>`).join('');
-$('#testimonials').innerHTML = config.testimonials.filter(item => config.previewMode || item.verified).map(item => `<article class="testimonial"><p class="sample-label">${item.verified ? 'Verified member experience' : 'Sample story · Not a real review'}</p><blockquote>“${escapeHTML(item.quote)}”</blockquote><div class="testimonial-person"><span class="avatar-placeholder" aria-hidden="true">${escapeHTML(item.initials)}</span><div><strong>${escapeHTML(item.name)}</strong><p>${escapeHTML(item.context)}</p></div></div></article>`).join('');
+$('#testimonials').innerHTML = config.testimonials.filter(item => config.previewMode || item.verified).slice(0,1).map(item => `<article class="testimonial"><p class="sample-label">${item.verified ? 'Verified member experience' : 'Sample story · Not a real review'}</p><blockquote>“${escapeHTML(item.quote)}”</blockquote><div class="testimonial-person"><span class="avatar-placeholder" aria-hidden="true">${escapeHTML(item.initials)}</span><div><strong>${escapeHTML(item.name)}</strong><p>${escapeHTML(item.context)}</p></div></div></article>`).join('');
 if (!$('#testimonials').children.length) $('.stories-section').hidden = true;
 const trialRows = [ ['After the trial',config.trial.priceAfter || 'Price to be confirmed'], ['Billing starts',config.trial.billingStarts || 'To be confirmed'], ['Payment details',config.trial.paymentRequired === null ? 'Requirement to be confirmed' : config.trial.paymentRequired ? 'Required' : 'Not required'], ['Cancellation',config.trial.cancellation || 'Instructions to be confirmed'] ];
 $('#subscription-details').innerHTML = trialRows.map(([term,detail]) => `<div><dt>${escapeHTML(term)}</dt><dd>${escapeHTML(detail)}</dd></div>`).join('');
@@ -185,7 +216,7 @@ if(subscriptionConfirmed) {
   $('#faq-cancel').textContent=config.trial.cancellation;
 }
 if(config.founder.name) $('#founder-name').textContent='Meet '+config.founder.name;
-if (config.founder.credentialsVerified) $('#founder-credential').textContent = config.founder.credentials;
+if (config.founder.credentialsVerified && $('#founder-credential')) $('#founder-credential').textContent = config.founder.credentials;
 if (config.founder.photo) {
   const src = safeWebURL(config.founder.photo);
   if (src) { const img = document.createElement('img'); img.src=src; img.alt=config.founder.name || 'THRIVE founder'; img.className='authentic-founder-photo'; $('.founder-video-thumb').prepend(img); $('.founder-monogram').hidden=true; }
@@ -197,9 +228,9 @@ function openInfo(key) {
   if (key === 'support' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(legal.supportEmail || '')) { location.assign('mailto:'+legal.supportEmail); return; }
   const info = {
     preview:['About this preview.', '<p class="dialog-status">Complete visual review · Launch details pending</p><p>This page presents the full planned THRIVE experience. App screens supplied by the team appear alongside clearly labeled illustrative screens, lifestyle photography, sample stories and video placeholders.</p><p>The portrait is illustrative, not the founder or a customer. Sample testimonials are not real endorsements. All product availability, trial entitlements and subscription details must be checked before launch.</p><p>No account, payment, download or trial activation is connected. Analytics currently runs as a local development stub without cookies or a tracking service.</p>'],
-    privacy:['Privacy.', '<p class="dialog-status">Privacy policy placeholder</p><p>The approved THRIVE privacy policy will be linked here before launch, including how app health information is handled.</p><p>This preview does not collect health logs, create accounts or take payments. Its interactive selections stay in this tab. The analytics integration is disabled. The hosting provider may process ordinary website requests.</p>'],
+    privacy:['Privacy.', '<p class="dialog-status">Privacy policy placeholder</p><p>The approved THRIVE privacy policy will be linked here before launch, including how app health information is handled. The storage, sharing/sale, export and deletion statements shown on this preview are placeholders requiring confirmation.</p><p>This preview does not collect health logs, create accounts or take payments. Its interactive selections stay in this tab. The analytics integration is disabled. The hosting provider may process ordinary website requests.</p>'],
     terms:['Your trial & subscription.', `<p class="dialog-status">Terms placeholder · Requires launch confirmation</p><p>Intended offer: 14 days free, with cancellation before your trial ends. Final price, payment requirements, billing start date and exact cancellation steps are awaiting confirmation.</p><dl class="dialog-terms">${trialRows.map(([term,detail]) => `<dt>${escapeHTML(term)}</dt><dd>${escapeHTML(detail)}</dd>`).join('')}</dl><p>The complete terms and trial inclusions will be shown before you subscribe. Nothing on this preview creates a subscription or charges you.</p>`],
-    support:['A little help.', '<p class="dialog-status">Support contact placeholder</p><p>The official support email and help resources will be published here before launch.</p><p>For design-preview feedback, contact the person who shared this page with you.</p>']
+    support:['Contact & support.', '<p class="dialog-status">Support contact placeholder</p><p>The official support email and help resources will be published here before launch.</p><p>For design-preview feedback, contact the person who shared this page with you.</p>']
   };
   if (info[key]) showDialog(...info[key]);
 }
@@ -274,12 +305,24 @@ reducedMotion.addEventListener('change',syncMotion);
 syncMotion();
 animate($('.hero-phone'),[{translate:'0 14px'},{translate:'0 0'}],{duration:1000,easing:'cubic-bezier(.2,.7,.2,1)'});
 let stickyFrame = 0;
+function syncStickySpace(){
+  const bar=$('#mobile-trial');
+  document.documentElement.style.setProperty('--sticky-height',(bar.hidden?0:Math.ceil(bar.getBoundingClientRect().height))+'px');
+}
+if('ResizeObserver' in window)new ResizeObserver(syncStickySpace).observe($('#mobile-trial'));
+addEventListener('focusin',event=>{
+  const bar=$('#mobile-trial');const target=event.target;
+  if(bar.hidden||bar.contains(target)||target.closest('dialog'))return;
+  if(target.getBoundingClientRect().bottom>bar.getBoundingClientRect().top-12)target.scrollIntoView({block:'center',behavior:'instant'});
+});
 function updateSticky() {
   stickyFrame=0;
   const heroBottom = $('.hero').getBoundingClientRect().bottom;
   const trial = $('#get-thrive').getBoundingClientRect();
   const inTrial = trial.top < innerHeight && trial.bottom > 0;
-  $('#mobile-trial').hidden = innerWidth > 600 || heroBottom > 0 || inTrial || contentDialog.open || screenshotDialog.open;
+  const footerVisible=$('.site-footer').getBoundingClientRect().top<innerHeight;
+  $('#mobile-trial').hidden = innerWidth > 600 || heroBottom > 0 || inTrial || footerVisible || contentDialog.open || screenshotDialog.open;
+  syncStickySpace();
 }
 function requestSticky() { if(!stickyFrame)stickyFrame=requestAnimationFrame(updateSticky); }
 addEventListener('scroll',requestSticky,{passive:true});

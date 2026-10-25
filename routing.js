@@ -1,6 +1,9 @@
 /* Pure routing rules, shared by the UI and focused tests. */
 (function(scope) {
   const rules = {
+    cardRequirement(value) {
+      return value === true ? 'A payment card is required.' : value === false ? 'No payment card is required.' : 'Card requirement: to be confirmed.';
+    },
     platformFrom(userAgent='',platform='',touchPoints=0) {
       if (/Android/i.test(userAgent)) return 'google';
       if (/iPhone|iPad|iPod/i.test(userAgent) || (platform === 'MacIntel' && touchPoints > 1)) return 'apple';
