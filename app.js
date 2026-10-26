@@ -155,6 +155,7 @@ function connectTabs(selector, select) {
   function choose(tab, focus=false) {
     tabs.forEach(item => { item.setAttribute('aria-selected',String(item === tab)); item.tabIndex = item === tab ? 0 : -1; });
     select(tab);
+    syncTabIndicator(tab.parentElement);
     if (focus) tab.focus({preventScroll:true});
   }
   tabs.forEach((tab,index) => {
@@ -173,7 +174,7 @@ connectTabs('[data-tracking]',tab => {
   $('#patterns-preview').hidden = key !== 'patterns';
   $('#tracking-caption').textContent = key === 'cycle' ? 'Tap the screen to enlarge.' : 'Illustrative product screen. Sample content, not real health data.';
   track('feature_preview',{feature:key});
-  animate($('#tracking-panel'),[{transform:'translateY(6px)'},{transform:'translateY(0)'}],{duration:250,easing:'ease-out'});
+  animate($('#tracking-panel'),[{opacity:.55,translate:'0 10px'},{opacity:1,translate:'0 0'}],{duration:450,easing:'cubic-bezier(.2,.7,.2,1)'});
 });
 let dailyFeature = 'nutrition';
 let dailyTheme = 'light';
@@ -183,6 +184,7 @@ function renderDaily() {
   button.dataset.screenshot = dailyFeature;
   button.dataset.theme = dailyTheme;
   button.setAttribute('aria-label','Enlarge '+screens[dailyFeature].title+' in '+dailyTheme+' mode');
+  animate(button,[{opacity:.5,translate:'0 10px'},{opacity:1,translate:'0 0'}],{duration:450,easing:'cubic-bezier(.2,.7,.2,1)'});
   $$('[data-app-theme]').forEach(item => item.setAttribute('aria-pressed',String(item.dataset.appTheme === dailyTheme)));
 }
 $('#daily-frame').setAttribute('role','tabpanel');
@@ -200,6 +202,7 @@ connectTabs('[data-movement]',tab => {
   $('#movement-subtitle').textContent = title;
   $('#movement-description').textContent = description;
   $('#movement-panel').setAttribute('aria-labelledby',tab.id);
+  animate($('#movement-panel'),[{opacity:.55,translate:'0 9px'},{opacity:1,translate:'0 0'}],{duration:420,easing:'cubic-bezier(.2,.7,.2,1)'});
   track('feature_preview',{feature:tab.dataset.movement});
 });
 
@@ -285,12 +288,88 @@ addEventListener('keydown',event => {if(event.key==='Escape' && !menu.hidden) {c
 matchMedia('(min-width:801px)').addEventListener('change',event => { if(event.matches)closeMenu(); });
 $$('.faq-list details').forEach((detail,index) => detail.addEventListener('toggle',() => {if(detail.open) { track('faq_open',{question:index+1}); $$('.faq-list details').forEach(other => { if(other!==detail)other.open=false; });}}));
 
-// Motion never hides content in CSS or reserves oversized scroll sections.
+// Scene motion is bounded and event-driven: no scroll interception, layout pins,
+// hidden CSS content, or perpetual JavaScript animation loop. Roots never move.
+const motionEase = 'cubic-bezier(.2,.7,.2,1)';
+const sceneDefinitions = [
+  {root:$('.hero'),photo:$('.hero-woman'),device:$('.hero-phone'),travel:24},
+  {root:$('#doctor-report'),paper:$('.report-visual'),travel:15},
+  {root:$('#strength-club'),photo:$('.movement-visual img'),device:$('.movement-phone'),travel:25},
+  {root:$('#the-app'),device:$('.tracking-phone'),travel:17},
+  {root:$('#daily-wellbeing'),photo:$('.daily-lifestyle'),travel:18},
+  {root:$('#get-thrive'),photo:$('.trial-photo img'),travel:21}
+];
+const visibleScenes = new Set();
+let sceneFrame = 0;
+function syncTabIndicator(group) {
+  if (!group || !group.hasAttribute('data-motion-tabs')) return;
+  const active = $('[role=tab][aria-selected=true]',group);
+  if (!active || !group.getClientRects().length) return;
+  group.style.setProperty('--tab-left',active.offsetLeft+'px');
+  group.style.setProperty('--tab-width',active.offsetWidth+'px');
+}
+const tabGroups = $$('.feature-tabs,.daily-tabs,.movement-options');
+tabGroups.forEach(group => {group.setAttribute('data-motion-tabs','');syncTabIndicator(group);});
+function renderScenes() {
+  sceneFrame = 0;
+  if (!canAnimate() || document.hidden) return;
+  const mobile = innerWidth<=600;
+  const measurements = [...visibleScenes].map(scene => {
+    const rect = scene.root.getBoundingClientRect();
+    const progress = Math.max(-1,Math.min(1,(innerHeight/2-rect.top-rect.height/2)/(innerHeight/2+rect.height/2)));
+    return {scene,progress,travel:scene.travel*(mobile ? .45 : 1)};
+  });
+  measurements.forEach(({scene,progress,travel}) => {
+    if(scene.photo)scene.photo.style.setProperty('--scene-shift',(progress*travel).toFixed(2)+'px');
+    if(scene.device)scene.device.style.setProperty('--device-shift',(-progress*travel*.7).toFixed(2)+'px');
+    if(scene.paper)scene.paper.style.setProperty('--paper-shift',(-progress*travel).toFixed(2)+'px');
+  });
+}
+function requestSceneFrame() {
+  if(canAnimate() && !document.hidden && !sceneFrame)sceneFrame=requestAnimationFrame(renderScenes);
+}
+function resetSceneOffsets() {
+  if(sceneFrame)cancelAnimationFrame(sceneFrame);
+  sceneFrame=0;
+  sceneDefinitions.forEach(scene => {
+    scene.photo?.style.removeProperty('--scene-shift');
+    scene.device?.style.removeProperty('--device-shift');
+    scene.paper?.style.removeProperty('--paper-shift');
+  });
+}
+function refreshMotionLayout() {tabGroups.forEach(syncTabIndicator);requestSceneFrame();}
+addEventListener('scroll',requestSceneFrame,{passive:true});
+addEventListener('resize',refreshMotionLayout,{passive:true});
+document.addEventListener('visibilitychange',() => {if(document.hidden)resetSceneOffsets();else requestSceneFrame();});
+// Geometry can change when FAQs, resources or subscription details open.
+if('ResizeObserver' in window)new ResizeObserver(refreshMotionLayout).observe($('#main'));
+document.fonts?.ready.then(refreshMotionLayout);
+
 if ('IntersectionObserver' in window) {
+  const sceneObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const scene=sceneDefinitions.find(item=>item.root===entry.target);
+      if(entry.isIntersecting){visibleScenes.add(scene);entry.target.classList.add('is-in-view');}
+      else{visibleScenes.delete(scene);entry.target.classList.remove('is-in-view');}
+    });
+    requestSceneFrame();
+  },{rootMargin:'100px 0px'});
+  sceneDefinitions.forEach(scene=>sceneObserver.observe(scene.root));
+
   const reveal = new IntersectionObserver(entries => {
-    entries.forEach(entry => {if(entry.isIntersecting) {animate(entry.target,[{opacity:.88,transform:'translateY(15px)'},{opacity:1,transform:'translateY(0)'}],{duration:650,easing:'cubic-bezier(.2,.7,.2,1)'});reveal.unobserve(entry.target);}});
-  },{threshold:.12});
-  $$('[data-reveal]').forEach(element => reveal.observe(element));
+    entries.forEach(entry => {
+      if(!entry.isIntersecting)return;
+      const stagger = Number(entry.target.dataset.motionDelay||0);
+      animate(entry.target,[{opacity:.55,translate:'0 28px'},{opacity:1,translate:'0 0'}],{duration:850,delay:stagger,easing:motionEase});
+      reveal.unobserve(entry.target);
+    });
+  },{threshold:.1});
+  // Small content groups have their own timing; large photographs remain sharp.
+  const targets = $$('[data-reveal],.pain-copy,.pain-bridge,.benefit-grid article,.steps-grid article,.video-card,.privacy-claims article');
+  targets.forEach(element=>reveal.observe(element));
+  ['.benefit-grid','.steps-grid','.video-grid','.privacy-claims'].forEach(selector=>{
+    $$(selector+' > *').forEach((element,index)=>{element.dataset.motionDelay=String(index*110);});
+  });
 }
 const motionToggle = $('.motion-toggle');
 function syncMotion() {
@@ -298,12 +377,18 @@ function syncMotion() {
   document.documentElement.dataset.motion = off?'off':'on';
   motionToggle.textContent = reducedMotion.matches ? 'Reduced motion (system)' : off ? 'Restore motion' : 'Reduce motion';
   motionToggle.setAttribute('aria-pressed',String(off));motionToggle.disabled=reducedMotion.matches;
-  if(off) {activeAnimations.forEach(animation => animation.cancel());activeAnimations.clear();}
+  if(off) {activeAnimations.forEach(animation => animation.cancel());activeAnimations.clear();resetSceneOffsets();}
+  else requestSceneFrame();
 }
 motionToggle.addEventListener('click',() => {manualReduced=!manualReduced;syncMotion();});
 reducedMotion.addEventListener('change',syncMotion);
 syncMotion();
-animate($('.hero-phone'),[{translate:'0 14px'},{translate:'0 0'}],{duration:1000,easing:'cubic-bezier(.2,.7,.2,1)'});
+// One-time arrival establishes hierarchy. Content is fully visible if JS fails.
+animate($('#hero-title'),[{opacity:.55,translate:'0 24px'},{opacity:1,translate:'0 0'}],{duration:1100,easing:motionEase});
+animate($('.hero-description'),[{opacity:.65,translate:'0 18px'},{opacity:1,translate:'0 0'}],{duration:1000,delay:100,easing:motionEase});
+animate($('.hero-copy .primary-button'),[{opacity:.7,translate:'0 12px'},{opacity:1,translate:'0 0'}],{duration:900,delay:200,easing:motionEase});
+animate($('.hero-woman'),[{scale:1.12},{scale:1.07}],{duration:1800,easing:motionEase});
+animate($('.hero-phone'),[{opacity:.65,translate:'0 30px'},{opacity:1,translate:'0 0'}],{duration:1400,delay:120,easing:motionEase});
 let stickyFrame = 0;
 function syncStickySpace(){
   const bar=$('#mobile-trial');

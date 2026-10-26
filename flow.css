@@ -1,0 +1,85 @@
+/* One material surface. Copy, semantic order and layout remain in styles.css. */
+html{scroll-behavior:smooth}
+html[data-motion=off]{scroll-behavior:auto!important}
+main{position:relative;isolation:isolate;background:var(--paper)}
+main:after{content:'';position:absolute;z-index:8;inset:0;pointer-events:none;background:url('assets/paper-grain.svg') repeat;opacity:.23;mix-blend-mode:multiply}
+main>section{position:relative}
+main>section.shell,main>.hero,main>.movement-section{max-width:none}
+.hero-photo-surface,.movement-photo-surface,.daily-photo-surface,.trial-photo-surface{position:absolute;inset:0;overflow:clip}
+.hero{background:linear-gradient(180deg,var(--paper) 0%,var(--paper) 67%,#efdfd4 88%,var(--blush) 100%)}
+.hero-art{isolation:isolate;overflow:clip}
+.hero-photo-surface{mask-image:linear-gradient(90deg,transparent,#000 24%),linear-gradient(180deg,#000 0%,#000 74%,transparent 100%);mask-composite:intersect}
+.hero-art:before{display:none}
+.pain-section{background:linear-gradient(180deg,var(--blush),#f0dcd1 46%,var(--paper));padding-top:44px;padding-bottom:65px}
+.benefits,.report-section,.featured-proof,.tracking,.daily-section,.steps-section,.demo-section,.privacy-section,.faq-section{background:transparent}
+.report-section{background:linear-gradient(180deg,var(--paper),var(--ivory) 43%,#efebdf 100%)}
+
+/* The olive chapter grows out of the same surface. The short edge fades sit
+   within existing padding, keeping headings, controls and phones legible. */
+.movement-section{background:linear-gradient(180deg,#efebdf 0,var(--deep) 38px,var(--deep) calc(100% - 48px),var(--paper) 100%)}
+.movement-visual{overflow:clip}
+.movement-photo-surface{mask-image:linear-gradient(90deg,transparent,#000 28%),linear-gradient(180deg,transparent,#000 9%,#000 88%,transparent);mask-composite:intersect}
+.movement-photo-surface:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,var(--deep),#1d291de0 18%,#1d291d00 55%)}
+.movement-visual:after{display:none}
+.movement-visual .image-label{bottom:75px}
+.movement-phone{bottom:78px}
+.featured-proof{padding-top:48px}
+.tracking{background:linear-gradient(180deg,var(--paper),#f5ede3 42%,var(--paper))}
+.tracking-stage{background:radial-gradient(ellipse at 50% 48%,#e5c8bd 0%,#ecd6cb 42%,#f5ede300 74%);border-radius:0}
+.daily-photo-surface{mask-image:linear-gradient(90deg,#000 78%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 80%,transparent);mask-composite:intersect}
+.daily-art{overflow:clip;isolation:isolate}
+.daily-tabs,.app-appearance{background:#f5f1e8ed}
+.steps-section{background:linear-gradient(180deg,var(--paper),var(--ivory) 55%,var(--paper))}
+.demo-section{border-top:0;padding-top:34px}
+.privacy-section{background:linear-gradient(180deg,var(--paper),#eae3d6 38%,#eae3d6 65%,var(--paper));padding-top:54px;padding-bottom:54px}
+.trial-section{background:linear-gradient(180deg,var(--paper),var(--deep) 64px,var(--deep) calc(100% - 58px),var(--paper))}
+.trial-photo{overflow:clip}
+.trial-photo-surface{mask-image:linear-gradient(90deg,transparent,#000 32%),linear-gradient(180deg,transparent,#000 12%,#000 82%,transparent);mask-composite:intersect}
+.trial-photo-surface:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,var(--deep),#1d291d8c 40%,#1d291d00 90%)}
+.trial-photo:after{display:none}
+.trial-photo .image-label{bottom:67px}
+.site-footer{background:var(--paper);padding-top:30px}
+
+/* Motion uses individual transform properties: screenshot crop geometry and
+   the original device rotations are unaffected. JavaScript runs only on scroll. */
+.hero-woman,.movement-visual img,.daily-lifestyle,.trial-photo img{translate:0 var(--scene-shift,0px);scale:1.07;transform-origin:65% 50%}
+.hero-phone,.movement-phone,.tracking-phone{translate:0 var(--device-shift,0px)}
+.report-visual{translate:0 var(--paper-shift,0px)}
+.hero-phone .original-phone,.movement-phone .original-phone,.tracking-phone .original-phone{animation:thrive-float 6.5s ease-in-out infinite alternate;animation-play-state:paused}
+.is-in-view .hero-phone .original-phone,.is-in-view .movement-phone .original-phone,.is-in-view .tracking-phone .original-phone{animation-play-state:running}
+.movement-phone .original-phone{animation-delay:-2s}.tracking-phone .original-phone{animation-delay:-4s}
+@keyframes thrive-float{from{translate:0 -4px}to{translate:0 5px}}
+.primary-button:active{transform:translateY(1px) scale(.985)}
+.report-sheet{transition:transform .65s cubic-bezier(.2,.7,.2,1)}
+@media(hover:hover){.report-visual:hover .report-sheet{transform:rotate(.5deg)}}
+[data-motion-tabs]{position:relative;--tab-ink:var(--forest)}
+[data-motion-tabs]:after{content:'';position:absolute;pointer-events:none;bottom:-1px;left:0;height:2px;width:var(--tab-width,0px);translate:var(--tab-left,0px) 0;background:var(--tab-ink);transition:translate .5s cubic-bezier(.2,.7,.2,1),width .5s cubic-bezier(.2,.7,.2,1)}
+[data-motion-tabs] [aria-selected=true]{border-bottom-color:transparent}
+.movement-options[data-motion-tabs]{--tab-ink:var(--sage)}
+@media(min-width:601px){.hero-phone{left:3.5%}}
+
+@media(max-width:600px){
+ .hero{background:linear-gradient(180deg,var(--paper),var(--paper) 66%,#efdfd4 88%,var(--blush))}
+ .hero-art:before{width:100%;height:38px;background:linear-gradient(var(--paper),transparent)}
+ .hero-photo-surface{mask-image:linear-gradient(180deg,transparent,#000 9%,#000 75%,transparent);mask-composite:add}
+ .hero .image-label{bottom:17px}
+ .pain-section{padding-top:30px;padding-bottom:42px}
+ .movement-section{background:linear-gradient(180deg,#efebdf 0,var(--deep) 38px,var(--deep) calc(100% - 48px),var(--paper))}
+ .movement-copy{padding-top:48px}
+ .movement-photo-surface{mask-image:linear-gradient(180deg,transparent,#000 14%,#000 78%,transparent);mask-composite:add}
+ .movement-photo-surface:after{background:linear-gradient(180deg,var(--deep),transparent 28%)}
+ .movement-phone{bottom:65px}.movement-visual .image-label{bottom:56px}
+ .featured-proof{padding-top:35px}
+ .daily-photo-surface{mask-image:linear-gradient(180deg,transparent,#000 9%,#000 78%,transparent);mask-composite:add}
+ .demo-section{padding-top:25px}
+ .privacy-section{padding-block:42px}
+ .trial-section{padding-top:49px;background:linear-gradient(180deg,var(--paper),var(--deep) 38px,var(--deep) calc(100% - 25px),var(--paper))}
+ .trial-photo-surface{mask-image:linear-gradient(180deg,transparent,#000 18%,#000 78%,transparent);mask-composite:add}
+ .trial-photo-surface:after{background:linear-gradient(180deg,var(--deep),transparent 40%)}
+ .trial-photo .image-label{bottom:24px}.trial-details{background:transparent}
+ .site-footer{padding-top:28px}
+}
+@media(prefers-reduced-motion:reduce){
+ .hero-woman,.movement-visual img,.daily-lifestyle,.trial-photo img,.hero-phone,.movement-phone,.tracking-phone,.report-visual{translate:0 0!important}
+}
+html[data-motion=off] .hero-woman,html[data-motion=off] .movement-visual img,html[data-motion=off] .daily-lifestyle,html[data-motion=off] .trial-photo img,html[data-motion=off] .hero-phone,html[data-motion=off] .movement-phone,html[data-motion=off] .tracking-phone,html[data-motion=off] .report-visual{translate:0 0!important}

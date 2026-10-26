@@ -23,3 +23,17 @@
 Screenshots in the parent outputs folder: thrive-editorial-mobile.png, thrive-editorial-mobile-full.png, thrive-editorial-desktop.png, thrive-editorial-desktop-full.png.
 
 The previous implementation is archived at archive/conversion-2-before-editorial/.
+
+## Continuous surface & motion — 27 October 2026
+
+- All visible source text and chapter IDs/order compare exactly with archive/editorial-1-before-flow/index.html.
+- 320/390/768/1440px: no horizontal overflow; headline contained; entire rotated hero phone remains inside the art region. Stable CTA bottoms remain 436/467/509/562px respectively.
+- Normal mobile page height is 11,048px. No pinned-scroll regions or animation-reserved gaps were introduced.
+- Verified moving tab indicator coordinates and active floating animation, plus nonzero scroll-driven photo/device offsets.
+- Manual Reduce motion clears scene offsets, disables CSS floating and smooth scrolling; Restore motion enables the controller again. System preference is also respected by the source; not independently toggled at OS level.
+- Mobile menu, Home/gym and Yoga/Pilates tabs, Cycle/Symptoms/Patterns, Nutrition/Daily check-in and both app appearances work. No browser console warnings/errors or broken loaded images observed.
+- The independently masked photo layers prevent scaling/parallax from exposing rectangular background seams or clipping foreground phone frames.
+- JavaScript syntax, static references/assets/ARIA, copy/CTA/disclaimer checks and routing/consent/conversion tests pass. Existing pending launch details are unchanged.
+- This remains viewport QA rather than a physical-device, full screen-reader or performance benchmark.
+
+Latest review URL: https://rp0514rp.github.io/thrive-landing-preview/?v=flow-1
