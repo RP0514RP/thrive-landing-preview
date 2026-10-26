@@ -19,8 +19,8 @@ All paths below are relative to `outputs/thrive-landing/`.
 | Symptom screen and history | `dist/index.html` → `#symptom-preview` | Replace clearly labeled illustrative sample rows/history with a verified app screenshot or accurate approved UI. Retain illustrative/sample labeling if it is still simulated. |
 | Patterns chart | `dist/index.html` → `#patterns-preview`, `.trend-chart`; `dist/app.js` → `reportMarkup` / `downloadSampleReport` | Replace the sample seven-day chart and sample text report with accurate approved product demonstration content. Never imply its sample data are real user results. A report download is not an app trial activation. |
 | Existing app screens | `dist/assets/cycle-light.webp`, `today-light.webp`, `today-dark.webp`, `nutrition-light.webp`, `nutrition-dark.webp`, `strength-club.webp` | Team-supplied design screenshots are reused intact with CSS crops. Verify current launch UI, nutrition calculations and terminology. Remove QA text visible in the supplied Strength Club screen in the actual source screenshot. Keep real app content; do not retouch fictional features into screenshots. |
-| Hero lifestyle portrait | `dist/assets/hero-woman.webp`; `dist/index.html` → `.hero-woman` | Generated illustrative model, not the founder or a customer. Review for final brand use or replace with approved photography under the same filename. The visible illustrative-image label and alt text identify it. Prompt: `hero-lifestyle-prompt.txt` (built-in ImageGen). |
-| Movement lifestyle photograph | `dist/assets/thrive-days.webp`; `dist/styles.css` → `.movement-visual` | Existing illustrative triptych, third frame. Replace with an approved studio/movement image if desired; preserve the responsive crop and image label. |
+| Hero lifestyle portrait | `dist/assets/hero-editorial.webp`; `dist/index.html` → `.hero-woman` | Generated illustrative model, not the founder or a customer. Review for final brand use or replace with approved photography under the same filename. The visible illustrative-image label and alt text identify it. Prompt: `editorial-image-prompts.txt` (built-in ImageGen). |
+| Movement lifestyle photograph | `dist/assets/strength-editorial.webp`; `dist/index.html` → `.movement-visual` | Generated illustrative kettlebell scene. Review or replace with approved movement photography; preserve the responsive crop and image label. |
 | Botanical / linen imagery | `dist/assets/hero-background.webp`, `ritual-triptych.webp`; `dist/styles.css` | Existing temporary brand imagery. Review for final brand approval. Preserve restrained matte treatment and soft joins; no generated UI text is used as a page background. |
 | Resource library previews | `dist/config.js` → `resources`; `dist/app.js` → resource renderer and modal | Approve and connect actual mindfulness, relaxation, sleep/stress and educational content. Current cards and players explicitly say Sample resource. Add author, duration, media and captions/transcripts as applicable. |
 | Privacy and terms | `dist/config.js` → `legal.privacy`, `.terms` | Published HTTPS policies covering app data, subscriptions and marketing analytics as applicable. Until then, buttons open explicit policy placeholders. |
@@ -49,3 +49,12 @@ node scripts/check-launch.mjs
 ```
 
 `check-launch.mjs` is expected to fail while launch details are pending. This does not block the clearly labeled design preview. It is a preflight aid, not a substitute for verifying app features, consent, policies, entitlements, captions, real customer permissions, actual store listings and physical-device behavior.
+
+## Editorial imagery added 26 October 2026
+
+- Hero: `dist/assets/hero-editorial.webp`, `.hero-woman` in `dist/index.html`.
+- Strength Club: `dist/assets/strength-editorial.webp`, `.movement-visual` in `dist/index.html`.
+- Food: `dist/assets/nutrition-editorial.webp`, `.daily-lifestyle` in `dist/index.html`.
+- Connection: `dist/assets/connection-editorial.webp`, `.trial-photo` in `dist/index.html`.
+
+All four are generated lifestyle illustrations, not actual customers or founder portraits. Review for final brand use or replace with licensed photography. Preserve meaningful alt text and the applicable illustrative-image labels. Exact prompts: `editorial-image-prompts.txt`. Original PNGs: `source-images/`. Product UI continues to use the supplied screenshots.

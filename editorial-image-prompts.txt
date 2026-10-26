@@ -1,0 +1,55 @@
+Built-in ImageGen. All models are illustrative lifestyle subjects, not founders, customers or endorsers.
+
+ASSET 1: hero-editorial.webp
+Use case: photorealistic-natural.
+Asset type: one real-feeling editorial lifestyle photograph for a THRIVE website hero. IMAGE ONLY: a single 3:2 landscape photograph, target 1536x1024, no website, no UI, no typography.
+
+REFERENCE ROLES: Image 1 (full-page THRIVE design) and image 2 (mobile hero design) establish the approved pose, honest matte photographic style, muted olive and ivory palette. Image 3 is the existing illustrative model portrait, guiding approximate age, believable skin texture and clothes. Recreate the photographic SCENE ONLY; exclude every phone, screen, heading, logo, button and layout element from the references.
+
+Subject: one confident relatable woman around 48 with natural softly wavy shoulder-length brown/dark-blonde hair with a few silver strands. Real facial expression lines, freckles and natural skin texture. She wears a matte muted olive cotton short-sleeve top and relaxed white linen trousers. Seated comfortably on a low pale limestone bench, leaning her cheek into one naturally posed hand, forearm resting on her raised knee, warm spontaneous small smile, looking slightly upward and left as in the approved mockup. Natural anatomy, five fingers, unforced body language.
+
+Composition: 3:2 landscape frame, subject occupies right 65-70 percent; woman’s entire face and hair clearly inside frame around x70%, y28%. Show head through lap, relaxed other hand visible near lap. Left 30-35 percent is mostly a simple softly lit warm ivory plaster wall with negative space, minimal furnishings, no object in the bottom-left foreground. Neutral white linen and limestone across the bottom, quiet honest interior. This left area will later receive a separate app overlay.
+
+Light and finish: simple diffuse natural side window daylight, gentle realistic shadows, neutral true colors, warm ivory without a yellow filter. Matte surface detail, normal skin, subtle textile wrinkles. Independent lifestyle magazine photograph, not beauty advertising. No HDR, bloom, glow, gold rim light, lens flare, artificial bokeh, shiny skin, glossy clothing, dominant plants, floral borders, jewelry prominence, phone, text or watermark. The model is fictional illustrative lifestyle imagery, not a founder or customer.
+
+ASSET 2: strength-editorial.webp
+Use case: photorealistic-natural.
+Asset type: one editorial lifestyle training photograph for THRIVE's Strength Club section. A single 3:2 landscape photograph, 1536x1024 target. Not a webpage, no text, no phone, no UI.
+
+REFERENCE ROLES: The attached THRIVE full-page design reference defines the muted olive, cream, honest editorial photography and approximate studio composition. The existing woman portrait guides the age and relatable real skin texture. Take only photographic tone from the references; do not include any screen, typography, logo or UI.
+
+Scene: simple airy real home training studio with muted deep olive rear wall, soft natural window daylight from right, linen curtain and ordinary pale oak floor. Left 30-35% is a darker olive softly out-of-focus studio wall with very little detail, clean space for later website text. Minimal equipment, not a glamorous gym; no dominant plant.
+
+Subject: a confident relatable woman around 48, natural medium build with some ordinary softness, softly wavy brown hair loosely tied back with a few silver strands, realistic face and fine expression lines. She wears matte muted olive workout leggings and a simple matching sleeveless top, ordinary training shoes. She is doing a technically plausible kettlebell deadlift, one dark cast-iron kettlebell held with both hands between the feet, feet hip-width, knees soft, hips hinging back, back in a neutral natural line. Three-quarter front view and the whole kettlebell, hands and feet visible. Head naturally aligned, eyes slightly forward/down, relaxed believable exertion and a small self-possessed smile, not posing for a fitness ad.
+
+Composition: woman occupies center-right x58-83%, clear outline and body proportions. Full body with a little breathing room around her, kettlebell near lower center-right. Left third stays dark olive and visually quiet. Broad studio composition usable as a horizontal section photo, balanced for both desktop and tighter mobile crop.
+
+Finish: matte cotton texture, real skin, natural room and equipment imperfections, neutral true colors, soft diffuse daylit shadows and gentle contrast. Independent lifestyle magazine documentary photograph, unretouched. No yellow/golden filter, shine, HDR, bloom, flare, CGI, artificial glowing edges, bodybuilding extreme physique, distorted fingers, extra limbs, phone, screen, graphics, text, watermark. The woman is an illustrative fictional model, not a trainer credential claim or testimonial.
+
+ASSET 3: connection-editorial.webp
+Use case: photorealistic-natural.
+Asset type: one lifestyle editorial photograph for the final invitation of the THRIVE landing page. A single 3:2 landscape photograph, target1536x1024. Photograph only, not a webpage. No text, phone or interface.
+
+REFERENCE ROLES: THRIVE full-page website reference establishes composition of its final conversation photograph, olive/ivory palette and honest photographic finish. Existing woman portrait is a cue for relatable age and natural skin; do not reproduce its exact face twice. No reference typography, logo, UI, button, or device in output.
+
+Scene and subjects: two DIFFERENT friends, both women around45-55, softly laughing and talking after an everyday walk on a quiet path. One dark-blonde/light-brown woman with wavy loose hair and subtle silver strands, the other with dark shoulder-length hair, olive/tan skin and a different face. Believable distinct identities, visible fine expression lines and normal skin. Muted olive and soft sand cotton/linen casual clothing, no sporty branding. A small candid exchanged smile and eye contact, comfortable familiarity, not exaggerated teeth or commercial-stock enthusiasm. Close waist-up framing, natural hand positions, neither looks at camera.
+
+Composition: landscape photograph with both women and their faces occupying right two-thirds, heads around x64% and x86% with enough breathing room above. Left third is very dark soft natural green out-of-focus trees and deep shaded leaves, clean quiet area for website copy overlay. Dark green atmosphere runs along left and bottom without drawn gradient or graphic shape; the right faces remain clearly lit by gentle daylight. Background sparse and subdued, a real outdoors path rather than a lush botanical set.
+
+Photographic finish: neutral true colors, matte clothing, honest skin texture, soft diffuse daylight and subtle natural background blur. Relaxed documentary portrait shot with normal lens, no golden filter, flare, bloom, glow, overretouching, glossy skin, fantasy forest, shiny foliage, dominant plants, border leaves, phone, logos, text, watermark or UI. These are fictional illustrative lifestyle models, not customers, founders or endorsers.
+
+ASSET 4: nutrition-editorial.webp
+Use case: photorealistic-natural.
+Asset type: one natural editorial lunch still-life photograph for the THRIVE nutrition section. One 3:2 landscape photograph, target1536x1024. Photo asset only, not a webpage or food infographic.
+
+REFERENCE ROLE: attached THRIVE full-page design gives muted ivory/olive palette, quiet tangible linen and natural everyday atmosphere. Take the photographic tone only. Do not include phones, app screens, text, graphics or layout.
+
+Scene: a simple real home lunch casually arranged on an oatmeal linen cloth over a light natural wooden kitchen table. One ordinary matte off-white ceramic bowl containing fresh dark greens, roasted salmon, grains and small ribbons of pink pickled onion. The food looks fresh, handmade and realistically imperfect with real portions, not an elaborate styled restaurant meal. A plain clear glass of water nearby. A simple linen napkin and ordinary fork subtly alongside. Sparse softly blurred warm ivory kitchen background.
+
+Composition: landscape photograph, bowl occupies left65% with bowl center around x34%,y58%. Water glass near x56%,y38%, safely behind/beside the bowl. Right third is quiet warm ivory/oatmeal linen and wall for a later separate app-screen overlay, no object or plant there. View from a gentle angled overhead perspective ~35degrees, allowing the food and the tactile bowl edge to be seen. Casual asymmetric arrangement and believable space, not a flat symmetrical product grid.
+
+Light and materials: soft neutral diffuse natural daylight, true food colors, normal water reflections, matte linen and ceramic, honest wood grain. Restrained magazine food photograph, unretouched natural finish. No golden/yellow filter, glossy advertising shine, hard sunlight beams, bloom, glow, exaggerated steam, excess food garnish, dominant plants, botanical frame, people, hands, phone, screen, logo, text, watermark or UI. This is illustrative lifestyle imagery, not a dietary or health outcome claim.
+
+
+
+
